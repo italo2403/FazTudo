@@ -2,4 +2,3 @@ streamlit
 pytubefix
 rembg
 pillow
-moviepy

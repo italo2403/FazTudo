@@ -26,27 +26,45 @@ def limpar_nome(texto):
 opcao = st.sidebar.radio("Selecione:", ["Baixar MP3", "Baixar Vídeo", "Remover Fundo de Imagem"])
 
 if opcao in ("Baixar MP3", "Baixar Vídeo"):
-    st.header(f"{'🔊 MP3' if opcao=='Baixar MP3' else '🎥 Vídeo'} do YouTube")
+    st.header("🔗 YouTube Downloader")
     link = st.text_input("Cole o link do vídeo:")
+
     if st.button("Baixar"):
-        link_clean = limpar_link(link)
         try:
+            link_clean = limpar_link(link)
             yt = YouTube(link_clean)
+
             if opcao == "Baixar MP3":
                 stream = yt.streams.filter(only_audio=True).first()
                 path_mp4 = os.path.join(OUTPUT_DIR, f"{limpar_nome(yt.title)}.mp4")
                 stream.download(output_path=OUTPUT_DIR, filename=os.path.basename(path_mp4))
                 mp3file = os.path.splitext(path_mp4)[0] + ".mp3"
-                clip = AudioFileClip(path_mp4); clip.write_audiofile(mp3file); clip.close()
+
+                if os.path.exists(mp3file):
+                    os.remove(mp3file)
+
+                clip = AudioFileClip(path_mp4)
+                clip.write_audiofile(mp3file)
+                clip.close()
                 os.remove(path_mp4)
+
                 st.success("MP3 pronto!")
-                st.download_button("🔽 Baixar MP3", open(mp3file, "rb"), file_name=os.path.basename(mp3file))
-            else:
+                with open(mp3file, "rb") as f:
+                    st.download_button("🔽 Baixar MP3", f, file_name=os.path.basename(mp3file))
+
+            elif opcao == "Baixar Vídeo":
                 stream = yt.streams.filter(progressive=True, file_extension="mp4").order_by("resolution").desc().first()
                 path_video = os.path.join(OUTPUT_DIR, f"{limpar_nome(yt.title)}.mp4")
+                
+                if os.path.exists(path_video):
+                    os.remove(path_video)
+
                 stream.download(output_path=OUTPUT_DIR, filename=os.path.basename(path_video))
+
                 st.success("Vídeo pronto!")
-                st.download_button("🔽 Baixar Vídeo", open(path_video, "rb"), file_name=os.path.basename(path_video))
+                with open(path_video, "rb") as f:
+                    st.download_button("🔽 Baixar Vídeo", f, file_name=os.path.basename(path_video))
+
         except Exception as e:
             st.error(f"Erro ao baixar: {e}")
 
