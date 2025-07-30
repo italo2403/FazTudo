@@ -1,5 +1,5 @@
-streamlit
-pytubefix
+  streamlit
+pytube
 rembg
 pillow
 moviepy
