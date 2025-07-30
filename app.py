@@ -1,7 +1,7 @@
 import streamlit as st
 from pytubefix import YouTube
 import os
-from moviepy.editor import AudioFileClip
+from moviepy import AudioFileClip
 from rembg import remove
 from PIL import Image
 import io
