@@ -1,5 +1,6 @@
-rembg[cpu]
-onnxruntime
 streamlit
 pytube
+rembg
 pillow
+moviepy
+onnxruntime
